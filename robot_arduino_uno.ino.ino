@@ -1,3 +1,4 @@
+// Prototype code . . .
 
 #define RELAY_INI_1 11
 #define RELAY_INI_2 10
@@ -18,29 +19,23 @@ void setup() {
 
 
 void loop() {
-  Serial.println("Turn on all");
+  const int SLEEP_MODE = 500;
+  
   digitalWrite(RELAY_INI_1, HIGH);
+  delay(SLEEP_MODE);
   digitalWrite(RELAY_INI_2, HIGH);
+  delay(SLEEP_MODE);
   digitalWrite(RELAY_INI_3, HIGH);
+  delay(SLEEP_MODE);
   digitalWrite(RELAY_INI_4, HIGH);
-  delay(1000);
+  delay(SLEEP_MODE);
 
-  Serial.println("Turn off all");
   digitalWrite(RELAY_INI_1, LOW);
+  delay(SLEEP_MODE);
   digitalWrite(RELAY_INI_2, LOW);
+  delay(SLEEP_MODE);
   digitalWrite(RELAY_INI_3, LOW);
+  delay(SLEEP_MODE);
   digitalWrite(RELAY_INI_4, LOW);
-  delay(1000);
+  delay(SLEEP_MODE);
 }
-// void setup() {
-//   // initialize digital pin LED_BUILTIN as an output.
-//   pinMode(LED_BUILTIN, OUTPUT);
-// }
-
-// // the loop function runs over and over again forever
-// void loop() {
-//   digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-//   delay(1000);                      // wait for a second
-//   digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
-//   delay(1000);                      // wait for a second
-// }
