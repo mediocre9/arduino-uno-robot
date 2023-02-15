@@ -1,73 +1,65 @@
 /*
-* Robot-Control - description here . . .
+* Project: Robot
 * Created Date: 6th February, 2023
+* Last Modified Date: 16th February, 2023
 * 
 * Note: We are currently using [Songle] (manufacturer) relay to control robot's 
 * movement. Other [Tongling] (manufacturer) relay will be used for other robot operations...
-* 
-* @To-do:
-* Memory Optimization [Done]
-* Refactoring [ ]
-*
-* Note: 
-* Please redeclare/recheck values here, according to arduino board...
 */
 
 
 // Red 4-channel relay. . .
-#define SONGLE_RELAY_INI_1 4  
+#define SONGLE_RELAY_INI_1 13
 #define SONGLE_RELAY_INI_2 7
 #define SONGLE_RELAY_INI_3 5
 #define SONGLE_RELAY_INI_4 6
 
 // Blue 4-channel relay . . .
-#define TONGLING_RELAY_INI_1 10
-#define TONGLING_RELAY_INI_2 2
+#define TONGLING_RELAY_INI_1 11
+#define TONGLING_RELAY_INI_2 9
 #define TONGLING_RELAY_INI_3 8
-#define TONGLING_RELAY_INI_4 9
+#define TONGLING_RELAY_INI_4 10
 #define BAUD_RATE 9600
-
-
-// Set Flag here for log outputs
+#define DELAY 250
 #define DEBUG_MODE 1
 
 
-const char FORWARD  = 'F';
+const char FORWARD = 'F';
 const char BACKWARD = 'B';
-const char LEFT     = 'L';
-const char RIGHT    = 'R';
-const char STOP     = 'X';
-const char CAMERA_VIEW_UP    = 'W';
-const char CAMERA_VIEW_DOWN  = 'S';
-const char CAMERA_VIEW_LEFT  = 'D';
+const char LEFT = 'L';
+const char RIGHT = 'R';
+const char STOP = 'X';
+
+
+const char CAMERA_VIEW_UP = 'W';
+const char CAMERA_VIEW_DOWN = 'S';
+const char CAMERA_VIEW_LEFT = 'D';
 const char CAMERA_VIEW_RIGHT = 'A';
+const char CAMERA_STOP = '0';
 
 
-
-/*
-* Singleton Class:
-* For One point object reference . . .
-*/
 class Robot {
 public:
   static Robot* init() {
     if (instance_ == nullptr) {
       instance_ = new Robot();
+      stop_camera();
     }
     return instance_;
   }
 
   static void control() {
     if (Serial.available() > 0) {
+      delay(DELAY);
       bluetoothResponse_ = Serial.read();
-      
+
 #if DEBUG_MODE
       Serial.print(bluetoothResponse_);
 #endif
 
       switch (bluetoothResponse_) {
 
-        // for robot movement . . . 
+        // for robot movement . . .
         case FORWARD:
           move_forward();
           break;
@@ -84,7 +76,11 @@ public:
           move_right();
           break;
 
-          // for camera angle view . . . 
+        case STOP:
+          stop_movement();
+          break;
+
+          // for camera angle view . . .
         case CAMERA_VIEW_UP:
           move_camera_angle_to_up();
           break;
@@ -101,6 +97,10 @@ public:
           move_camera_angle_to_right();
           break;
 
+        case CAMERA_STOP:
+          stop_camera();
+          break;
+          
         default:
           break;
       }
@@ -110,55 +110,83 @@ public:
 private:
   Robot() {}
 
-  static void move_left() {
-    /**
-     * Do stuff from here . . . 
-     */
-  }
-
-  static void move_right() {
-    /**
-     * Do stuff from here . . . 
-     */
-  }
-
-  static void move_forward() {
-    digitalWrite(SONGLE_RELAY_INI_1, HIGH);
-    digitalWrite(SONGLE_RELAY_INI_2, HIGH);
-    digitalWrite(SONGLE_RELAY_INI_3, HIGH);
-    digitalWrite(SONGLE_RELAY_INI_4, HIGH);
-  }
-
-  static void move_backward() {
+  static void stop_movement() {
     digitalWrite(SONGLE_RELAY_INI_1, LOW);
     digitalWrite(SONGLE_RELAY_INI_2, LOW);
     digitalWrite(SONGLE_RELAY_INI_3, LOW);
     digitalWrite(SONGLE_RELAY_INI_4, LOW);
   }
 
-  // camera angle movement. . .   
+  static void move_forward() {
+    digitalWrite(SONGLE_RELAY_INI_1, LOW);
+    digitalWrite(SONGLE_RELAY_INI_2, HIGH);
+    digitalWrite(SONGLE_RELAY_INI_3, LOW);
+    digitalWrite(SONGLE_RELAY_INI_4, HIGH);
+  }
+
+  static void move_backward() {
+    digitalWrite(SONGLE_RELAY_INI_1, HIGH);
+    digitalWrite(SONGLE_RELAY_INI_2, LOW);
+    digitalWrite(SONGLE_RELAY_INI_3, HIGH);
+    digitalWrite(SONGLE_RELAY_INI_4, LOW);
+  }
+
+  static void move_left() {
+    digitalWrite(SONGLE_RELAY_INI_1, LOW);
+    digitalWrite(SONGLE_RELAY_INI_2, HIGH);
+    digitalWrite(SONGLE_RELAY_INI_3, HIGH);
+    digitalWrite(SONGLE_RELAY_INI_4, LOW);
+  }
+
+  static void move_right() {
+    digitalWrite(SONGLE_RELAY_INI_1, HIGH);
+    digitalWrite(SONGLE_RELAY_INI_2, LOW);
+    digitalWrite(SONGLE_RELAY_INI_3, LOW);
+    digitalWrite(SONGLE_RELAY_INI_4, HIGH);
+  }
+
+
+
+  // camera angle movement. . .
+  // HIGH is LOW and LOW is HIGH don't know why?
+  // might be a low voltage issue....
+  static void stop_camera() {
+    digitalWrite(TONGLING_RELAY_INI_1, HIGH);
+    digitalWrite(TONGLING_RELAY_INI_2, HIGH);
+    digitalWrite(TONGLING_RELAY_INI_3, HIGH);
+    digitalWrite(TONGLING_RELAY_INI_4, HIGH);
+  }
+
   static void move_camera_angle_to_up() {
-    /**
-     * Do stuff from here . . . 
-     */
+    digitalWrite(TONGLING_RELAY_INI_1, HIGH);
+    digitalWrite(TONGLING_RELAY_INI_2, LOW);
+    digitalWrite(TONGLING_RELAY_INI_3, HIGH);
+    digitalWrite(TONGLING_RELAY_INI_4, LOW);
   }
 
   static void move_camera_angle_to_down() {
-    /**
-     * Do stuff from here . . . 
-     */
+    digitalWrite(TONGLING_RELAY_INI_1, LOW);
+    digitalWrite(TONGLING_RELAY_INI_2, HIGH);
+    digitalWrite(TONGLING_RELAY_INI_3, LOW);
+    digitalWrite(TONGLING_RELAY_INI_4, HIGH);
   }
 
   static void move_camera_angle_to_left() {
-    /**
-     * Do stuff from here . . . 
-     */
+    digitalWrite(TONGLING_RELAY_INI_1, LOW);
+    digitalWrite(TONGLING_RELAY_INI_2, HIGH);
+    digitalWrite(TONGLING_RELAY_INI_3, HIGH);
+    digitalWrite(TONGLING_RELAY_INI_4, LOW);
   }
 
   static void move_camera_angle_to_right() {
-    /**
-     * Do stuff from here . . . 
-     */
+    digitalWrite(TONGLING_RELAY_INI_1, HIGH);
+    digitalWrite(TONGLING_RELAY_INI_2, LOW);
+    digitalWrite(TONGLING_RELAY_INI_3, LOW);
+    digitalWrite(TONGLING_RELAY_INI_4, HIGH);
+  }
+
+  ~Robot(){
+    delete instance_;
   }
 
 private:
