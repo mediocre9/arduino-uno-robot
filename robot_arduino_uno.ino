@@ -1,13 +1,3 @@
-/*
-* Project: Robot
-* Created Date: 6th February, 2023
-* Last Modified Date: 16th February, 2023
-* 
-* Note: We are currently using [Songle] (manufacturer) relay to control robot's 
-* movement. Other [Tongling] (manufacturer) relay will be used for other robot operations...
-*/
-
-
 // Red 4-channel relay. . .
 #define SONGLE_RELAY_INI_1 13
 #define SONGLE_RELAY_INI_2 7
@@ -19,6 +9,7 @@
 #define TONGLING_RELAY_INI_2 9
 #define TONGLING_RELAY_INI_3 8
 #define TONGLING_RELAY_INI_4 10
+
 #define BAUD_RATE 9600
 #define DELAY 250
 #define DEBUG_MODE 1
@@ -148,8 +139,6 @@ private:
 
 
   // camera angle movement. . .
-  // HIGH is LOW and LOW is HIGH don't know why?
-  // might be a low voltage issue....
   static void stop_camera() {
     digitalWrite(TONGLING_RELAY_INI_1, HIGH);
     digitalWrite(TONGLING_RELAY_INI_2, HIGH);
@@ -185,7 +174,7 @@ private:
     digitalWrite(TONGLING_RELAY_INI_4, HIGH);
   }
 
-  ~Robot(){
+  ~Robot() {
     delete instance_;
   }
 
