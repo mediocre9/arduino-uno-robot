@@ -174,15 +174,11 @@ private:
     digitalWrite(TONGLING_RELAY_INI_4, HIGH);
   }
 
-  ~Robot() {
-    delete instance_;
-  }
-
 private:
   static Robot* instance_;
   static char bluetoothResponse_;
 };
-Robot* Robot::instance_ = 0;
+Robot* Robot::instance_ = nullptr;
 char Robot::bluetoothResponse_ = '0';
 
 
